@@ -2,45 +2,108 @@
 
 ## Português
 
-`oilfield-equipment-predictive-maintenance` é um projeto de manutenção preditiva para equipamentos de campo em oil & gas. O objetivo é detectar janelas operacionais com risco elevado de intervenção antes que a falha se materialize em parada ou perda operacional.
+`oilfield-equipment-predictive-maintenance` é um projeto de manutenção preditiva para equipamentos de campo em oil & gas. Ele foi estruturado para ser lido em camadas: do entendimento mais básico do problema até a parte mais técnica de modelagem e avaliação.
 
-### Base pública escolhida
+## Leitura rápida
 
-O projeto usa como referência pública o **3W Dataset**, da Petrobras, conhecido por tratar eventos indesejáveis raros em poços de petróleo e gás. Essa escolha dá relevância real ao domínio, porque o problema parte de telemetria operacional de oil & gas em vez de usar uma base genérica de indústria.
+### O que este projeto faz
 
-Como a base pública completa não é embutida diretamente no repositório, o runtime usa uma **amostra local 3W-style** com schema inspirado no problema real para manter a execução leve, determinística e fácil de validar.
+O projeto tenta responder uma pergunta simples:
+
+- **esta janela operacional já indica risco suficiente para manutenção?**
+
+Em vez de esperar a falha acontecer, o pipeline analisa sinais operacionais de equipamentos e estima a probabilidade de uma intervenção ser necessária.
+
+### O que ele usa
+
+- telemetria de equipamentos;
+- um classificador supervisionado;
+- métricas de priorização e separação;
+- artefatos prontos para análise operacional.
+
+### Resultado atual
+
+- `roc_auc = 0.9381`
+- `average_precision = 0.9308`
+- `f1 = 0.8409`
+
+## Contexto de negócio
+
+### Por que isso importa em oil & gas
+
+Em operações de campo, o problema não é só falha técnica. O impacto real costuma vir de:
+
+- parada não planejada;
+- perda de produtividade;
+- custo de intervenção emergencial;
+- risco operacional maior em ativos degradados.
+
+Por isso, manutenção preditiva é valiosa porque transforma telemetria em decisão antecipada. Em vez de reagir à falha, a operação tenta identificar:
+
+- ativos que estão se deteriorando;
+- janelas em que o comportamento saiu do padrão;
+- casos que já merecem inspeção, manutenção ou troca preventiva.
+
+## Base pública escolhida
+
+### Referência pública
+
+O projeto usa como referência de domínio o **3W Dataset**, da **Petrobras**, por ser uma base pública conhecida para eventos indesejáveis em poços de petróleo e gás.
 
 Referência local:
 
 - [public_dataset_reference.json](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/raw/public_dataset_reference.json)
 
-### Storytelling técnico
+### Por que essa base dá relevância ao projeto
 
-Manutenção preditiva em oil & gas raramente é só “prever falha”. Na prática, o objetivo operacional é transformar sinais de degradação em uma decisão antecipada:
+Porque ela conecta o projeto diretamente ao universo de:
 
-- qual ativo está se aproximando de uma condição crítica?
-- qual janela já merece inspeção ou intervenção?
-- quais sensores explicam esse risco?
+- telemetria operacional;
+- eventos raros;
+- monitoramento industrial;
+- oil & gas.
 
-Esse projeto foi desenhado com essa mentalidade. Em vez de trabalhar apenas com o conceito abstrato de falha, ele modela **janelas de telemetria** e classifica se aquela janela já indica condição suficiente para manutenção.
+Ou seja, não é um projeto genérico de manutenção. Ele está ancorado em um problema real do setor.
 
-### O que o projeto faz
+### Como o projeto usa essa referência
 
-O pipeline:
+Para manter o repositório leve e reproduzível, o runtime não embute a base pública completa. Em vez disso, ele usa uma **amostra local `3W-style`**, desenhada para preservar o tipo de sinais e a lógica operacional do problema.
 
-1. gera uma base `3W-style` de telemetria de ativos de campo;
-2. cria um rótulo binário `maintenance_required`;
-3. separa treino e teste de forma estratificada;
-4. aplica um pipeline com pré-processamento e `RandomForestClassifier`;
-5. gera probabilidade de manutenção por janela;
-6. exporta artefatos para análise operacional.
+Arquivo da amostra:
 
-### Arquitetura do repositório
+- [oilfield_telemetry_3w_style_sample.csv](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/raw/oilfield_telemetry_3w_style_sample.csv)
+
+## Storytelling técnico
+
+Manutenção preditiva em oil & gas raramente é só “prever falha”. Na prática, a operação quer responder:
+
+- qual ativo está degradando?
+- qual janela já parece anormal?
+- qual equipamento deve entrar na fila de manutenção primeiro?
+
+Esse projeto foi desenhado com essa mentalidade. Ele não trabalha com uma falha abstrata e distante; ele trabalha com **janelas operacionais**, e o rótulo do problema é:
+
+- `maintenance_required`
+
+Ou seja, a pergunta do modelo é diretamente útil para operação.
+
+## O que o projeto faz, passo a passo
+
+1. gera uma base sintética `3W-style` de telemetria;
+2. organiza os sinais por janela operacional;
+3. define um rótulo binário de manutenção requerida;
+4. separa treino e teste de forma estratificada;
+5. aplica pré-processamento estruturado;
+6. treina um `RandomForestClassifier`;
+7. gera probabilidade de manutenção por janela;
+8. exporta as janelas pontuadas para análise.
+
+## Arquitetura do repositório
 
 - [src/sample_data.py](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/src/sample_data.py)  
   Gera a base sintética inspirada no 3W e registra a referência pública.
 - [src/modeling.py](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/src/modeling.py)  
-  Implementa o pipeline de classificação e a avaliação.
+  Implementa o pipeline de classificação, o treino e a avaliação.
 - [main.py](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/main.py)  
   Executa o benchmark ponta a ponta.
 - [tests/test_project.py](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/tests/test_project.py)  
@@ -58,11 +121,7 @@ flowchart LR
 
 ## Dataset local
 
-Arquivo principal:
-
-- [oilfield_telemetry_3w_style_sample.csv](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/raw/oilfield_telemetry_3w_style_sample.csv)
-
-### O que a base contém
+### Estrutura da base
 
 Cada linha representa uma janela operacional de um ativo:
 
@@ -77,67 +136,124 @@ Cada linha representa uma janela operacional de um ativo:
 - `flow_rate`
 - `maintenance_required`
 
-### Como a base foi desenhada
+### Significado dos campos
 
-A amostra local foi construída para representar um padrão plausível de degradação operacional:
+#### `asset_id`
 
-- aumento gradual de `vibration`;
+Identifica o equipamento ou unidade operacional.
+
+#### `window_id`
+
+Identifica a janela analisada dentro daquele ativo.
+
+#### `discharge_pressure`
+
+Proxy de pressão de descarga do ativo. No sample, ajuda a representar perda de eficiência sob degradação.
+
+#### `suction_pressure`
+
+Proxy de pressão de sucção, útil para observar comportamento hidráulico do sistema.
+
+#### `line_pressure`
+
+Representa a pressão da linha, ajudando a compor o contexto operacional.
+
+#### `temperature`
+
+Importante porque sobreaquecimento costuma aparecer como sinal de degradação mecânica ou elétrica.
+
+#### `vibration`
+
+Um dos sinais mais clássicos para manutenção preditiva, especialmente em equipamentos rotativos.
+
+#### `motor_current`
+
+Ajuda a capturar esforço elétrico adicional e carga anormal do ativo.
+
+#### `flow_rate`
+
+Proxy de performance operacional. Queda de vazão pode indicar perda de eficiência.
+
+#### `maintenance_required`
+
+Rótulo binário do problema. Indica que a janela já apresenta condição suficiente para manutenção.
+
+## Como a base foi desenhada
+
+A amostra local foi construída para simular degradação operacional progressiva:
+
+- aumento de `vibration`;
 - elevação de `temperature`;
 - aumento de `motor_current`;
 - queda de `flow_rate`;
-- deterioração de `discharge_pressure`.
+- redução de `discharge_pressure`.
 
-O rótulo `maintenance_required` aparece quando essa combinação de sinais ultrapassa um limiar de risco ou quando um evento indesejado é introduzido de forma controlada.
+O rótulo positivo aparece quando essa combinação ultrapassa um limiar de risco ou quando um evento indesejado é introduzido de forma controlada.
+
+Essa estrutura faz o sample ser útil para benchmark porque existe uma relação coerente entre os sensores e o desfecho.
 
 ## Técnicas utilizadas
+
+## Nível intermediário
 
 ### 1. Pré-processamento estruturado
 
 O pipeline separa:
 
 - features numéricas;
-- feature categórica `asset_id`.
+- a feature categórica `asset_id`.
 
 Para isso, usa `ColumnTransformer` com:
 
-- `SimpleImputer(strategy="median")` para numéricas;
-- `SimpleImputer(strategy="most_frequent")` para categóricas;
+- `SimpleImputer(strategy="median")` nas numéricas;
+- `SimpleImputer(strategy="most_frequent")` na categórica;
 - `OneHotEncoder(handle_unknown="ignore")` para `asset_id`.
 
-Isso permite tratar o tipo do ativo como informação útil sem quebrar o pipeline.
+### Por que isso importa
+
+Porque manutenção preditiva costuma lidar com:
+
+- sinais numéricos contínuos;
+- tipos de ativo diferentes;
+- pequenas lacunas de dado;
+- necessidade de pipeline reproduzível.
 
 ### 2. Classificação supervisionada
 
 O modelo principal é um `RandomForestClassifier`.
 
-Motivo da escolha:
+### Por que esse modelo foi escolhido
 
 - lida bem com relações não lineares;
-- funciona bem em problemas tabulares com sinais heterogêneos;
-- é uma baseline forte e interpretável para MVPs de manutenção preditiva.
+- funciona bem em tabular;
+- aceita interações entre sinais sem grande feature engineering manual;
+- é uma baseline forte para MVP industrial.
 
 ### 3. Probabilidade de manutenção
 
-O pipeline não gera só um rótulo binário. Ele produz uma `predicted_probability` por janela.
+O projeto não gera só classe binária. Ele gera:
 
-Isso é importante porque, em operação, a probabilidade costuma ser mais útil do que a classe pura para:
+- `predicted_probability`
 
-- priorizar ativos;
-- ordenar fila de manutenção;
-- definir thresholds diferentes por criticidade.
+Isso é importante porque a operação normalmente prefere:
+
+- ordenar ativos por risco;
+- aplicar thresholds diferentes;
+- usar score para priorização.
 
 ## Estratégia de modelagem
 
 O pipeline executa:
 
-1. leitura da base de telemetria;
+1. leitura da telemetria;
 2. separação entre features e rótulo;
-3. divisão `train/test` estratificada;
-4. pré-processamento de dados;
-5. treino do classificador;
+3. `train_test_split` estratificado;
+4. pré-processamento;
+5. treino do modelo;
 6. predição de probabilidade;
-7. avaliação por métricas de classificação;
-8. exportação das janelas pontuadas.
+7. predição binária com threshold `0.5`;
+8. cálculo de métricas;
+9. exportação das janelas pontuadas.
 
 ## Métricas
 
@@ -151,21 +267,21 @@ O benchmark usa:
 
 Pergunta:
 
-- o modelo consegue separar janelas normais e janelas com necessidade de manutenção?
+- o modelo separa bem janelas normais e janelas críticas?
 
 ### `Average Precision`
 
 Pergunta:
 
-- quão bem o modelo prioriza os casos positivos em um cenário desbalanceado?
+- o modelo prioriza bem os positivos ao longo do ranking?
 
-Essa métrica é importante porque manutenção preditiva costuma ter eventos raros e custo alto de erro.
+Essa métrica é importante porque manutenção preditiva costuma ser sensível à qualidade da priorização.
 
 ### `F1`
 
 Pergunta:
 
-- como o modelo se comporta no equilíbrio entre precisão e recall no threshold atual?
+- como o modelo equilibra precisão e recall no threshold atual?
 
 ## Resultados atuais
 
@@ -177,15 +293,98 @@ Pergunta:
 - `average_precision = 0.9308`
 - `f1 = 0.8409`
 
-### Interpretação dos resultados
+## Leitura técnica dos resultados
 
-O benchmark mostra um modelo forte para o sample atual:
+- `ROC-AUC` alto indica boa separação entre janelas normais e janelas críticas.
+- `Average Precision` alta indica boa capacidade de colocar janelas críticas no topo da fila.
+- `F1` alto indica equilíbrio razoável entre capturar risco e evitar excesso de falso positivo.
 
-- separação robusta entre janelas normais e janelas críticas;
-- boa priorização dos casos com manutenção requerida;
-- desempenho coerente para um MVP de manutenção preditiva.
+Como o dataset ainda é sintético, esses resultados devem ser lidos como:
 
-Como a base ainda é sintética, esses números devem ser lidos como validação estrutural da arquitetura e da lógica do problema, não como estimativa direta de produção.
+- validação da arquitetura;
+- validação da lógica do problema;
+- benchmark coerente para portfólio.
+
+## Nível avançado
+
+### Decisões arquiteturais implícitas
+
+Mesmo sendo um projeto offline, ele já treina bem a fala sobre arquitetura em nuvem:
+
+- ingestão de telemetria;
+- transformação em janelas;
+- batch scoring;
+- geração de fila priorizada;
+- possibilidade de alertas por threshold.
+
+### Como isso evoluiria para produção
+
+Um desenho realista teria:
+
+- batch pipeline para treino e reprocessamento histórico;
+- stream pipeline para alertas near real-time;
+- monitoramento de drift dos sensores;
+- registry de modelos;
+- observabilidade de métricas e thresholds por ativo.
+
+### Trade-offs que este projeto ajuda a discutir
+
+#### Batch
+
+Vantagens:
+
+- simplicidade;
+- custo menor;
+- reprocessamento fácil;
+- forte reprodutibilidade.
+
+Limitações:
+
+- menor responsividade;
+- janelas de decisão mais lentas.
+
+#### Stream
+
+Vantagens:
+
+- alerta mais cedo;
+- menor latência operacional;
+- melhor resposta a deterioração súbita.
+
+Limitações:
+
+- maior complexidade;
+- governança e observabilidade mais difíceis;
+- maior custo operacional.
+
+### Governança
+
+Este tipo de problema exige atenção a:
+
+- qualidade dos sensores;
+- consistência de schema;
+- versionamento da feature logic;
+- lineage entre telemetria, janela e score final.
+
+### Monitoramento
+
+Um sistema real precisaria monitorar:
+
+- drift de distribuição dos sensores;
+- estabilidade de `positive_rate`;
+- queda de performance do modelo;
+- falsos positivos por tipo de ativo;
+- tempo entre alerta e manutenção efetiva.
+
+### Escalabilidade
+
+A escalabilidade real entraria em:
+
+- volume de janelas por ativo;
+- número de ativos simultâneos;
+- custo de scoring;
+- janela temporal de recomputação;
+- segmentação por tipo de equipamento ou região.
 
 ## Artefatos gerados
 
@@ -197,36 +396,39 @@ Como a base ainda é sintética, esses números devem ser lidos como validação
 `maintenance_scored_windows.csv`:
 
 - mostra as janelas do conjunto de teste;
-- inclui rótulo real, probabilidade prevista e classe prevista.
+- inclui rótulo real;
+- inclui probabilidade prevista;
+- inclui classe prevista.
 
 `oilfield_predictive_maintenance_report.json`:
 
-- consolida as métricas do benchmark;
-- registra o tamanho da base e os caminhos dos artefatos.
+- resume o benchmark;
+- registra o tamanho da base;
+- registra as métricas e os caminhos dos artefatos.
 
 ## Limitações atuais
 
 - o runtime usa sample `3W-style`, não a base pública completa;
 - o benchmark ainda é offline;
-- o projeto ainda não inclui séries temporais contínuas com stream real;
-- não há integração com sistema real de ordens de manutenção.
+- o projeto não usa stream real;
+- ainda não há integração com ordens de manutenção.
 
 ## Próximos passos naturais
 
 - conectar a base pública completa do 3W;
-- transformar a classificação por janela em pipeline temporal com rolling windows;
-- integrar alertas por ativo;
+- gerar features temporais com rolling windows;
+- introduzir pipeline de alertas por ativo;
 - medir drift dos sensores;
-- incorporar prioridade operacional por tipo de equipamento;
-- acoplar o pipeline a uma arquitetura em nuvem com batch e streaming.
+- criar thresholds por criticidade operacional;
+- acoplar a arquitetura a batch + stream em nuvem.
 
 ## English
 
-`oilfield-equipment-predictive-maintenance` is a predictive maintenance project for oilfield equipment, built around a public 3W-style telemetry framing and designed to score maintenance risk from operational windows.
+`oilfield-equipment-predictive-maintenance` is a predictive maintenance project for oilfield equipment. It is intentionally documented in layers, from a quick operational explanation to a deeper technical discussion of modeling, evaluation, governance, monitoring, and scalability.
 
 ### Public Dataset Reference
 
-The project uses the Petrobras **3W Dataset** as its public domain reference because it is directly related to rare undesirable events in oil wells and oilfield operations.
+The project uses the Petrobras **3W Dataset** as its domain reference because it is directly related to rare undesirable events in oil wells and oilfield operations.
 
 ### Current Results
 
