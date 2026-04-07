@@ -391,6 +391,17 @@ A escalabilidade real entraria em:
 - [maintenance_scored_windows.csv](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/processed/maintenance_scored_windows.csv)
 - [oilfield_predictive_maintenance_report.json](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/processed/oilfield_predictive_maintenance_report.json)
 
+### Contrato do relatório
+
+O arquivo `oilfield_predictive_maintenance_report.json` fixa um contrato simples e reutilizável:
+
+- `dataset_source`: identifica o framing do dataset usado no benchmark;
+- `row_count`: volume total processado;
+- `asset_count`: quantidade de ativos representados;
+- `positive_rate`: prevalência de janelas críticas;
+- `roc_auc`, `average_precision`, `f1`: métricas principais do benchmark;
+- `scored_artifact` e `report_artifact`: caminhos dos artefatos persistidos.
+
 ### Como ler os artefatos
 
 `maintenance_scored_windows.csv`:
@@ -422,6 +433,16 @@ A escalabilidade real entraria em:
 - criar thresholds por criticidade operacional;
 - acoplar a arquitetura a batch + stream em nuvem.
 
+## Como defender este projeto em entrevista
+
+Uma forma forte de apresentar este repositório é:
+
+- ele mostra manutenção preditiva orientada a janelas operacionais;
+- trabalha com sinais coerentes para contexto de oil & gas;
+- separa claramente dataset, modelagem, avaliação e artefatos;
+- produz score probabilístico, não só classe binária;
+- abre discussão sobre governança, drift, batch, stream e priorização em campo.
+
 ## English
 
 `oilfield-equipment-predictive-maintenance` is a predictive maintenance project for oilfield equipment. It is intentionally documented in layers, from a quick operational explanation to a deeper technical discussion of modeling, evaluation, governance, monitoring, and scalability.
@@ -439,3 +460,20 @@ The project uses the Petrobras **3W Dataset** as its domain reference because it
 - `roc_auc = 0.9381`
 - `average_precision = 0.9308`
 - `f1 = 0.8409`
+
+### Output Contract
+
+The project exports:
+
+- [maintenance_scored_windows.csv](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/processed/maintenance_scored_windows.csv)
+- [oilfield_predictive_maintenance_report.json](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/processed/oilfield_predictive_maintenance_report.json)
+
+The report keeps the benchmark contract explicit through:
+
+- `dataset_source`
+- `row_count`
+- `asset_count`
+- `positive_rate`
+- `roc_auc`
+- `average_precision`
+- `f1`
