@@ -1,0 +1,12 @@
+{
+  "dataset_source": "3w_style_oilfield_telemetry_sample",
+  "public_dataset_reference": "/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/raw/public_dataset_reference.json",
+  "row_count": 540,
+  "asset_count": 6,
+  "positive_rate": 0.3519,
+  "roc_auc": 0.9381,
+  "average_precision": 0.9308,
+  "f1": 0.8409,
+  "scored_artifact": "/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/processed/maintenance_scored_windows.csv",
+  "report_artifact": "/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/processed/oilfield_predictive_maintenance_report.json"
+}

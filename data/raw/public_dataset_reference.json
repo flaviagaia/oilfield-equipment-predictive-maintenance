@@ -1,0 +1,7 @@
+{
+  "dataset_name": "3W Dataset",
+  "dataset_owner": "Petrobras",
+  "dataset_project": "3W Project",
+  "dataset_reference": "3W Dataset: realistic and public dataset with rare undesirable real events in oil wells",
+  "dataset_note": "This project uses a compact local 3W-style telemetry sample for deterministic execution while preserving the oil-and-gas predictive maintenance framing."
+}
