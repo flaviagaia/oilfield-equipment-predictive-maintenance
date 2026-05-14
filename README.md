@@ -52,7 +52,7 @@ O projeto usa como referência de domínio o **3W Dataset**, da **Petrobras**, p
 
 Referência local:
 
-- [public_dataset_reference.json](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/raw/public_dataset_reference.json)
+- [public_dataset_reference.json](data/raw/public_dataset_reference.json)
 
 ### Por que essa base dá relevância ao projeto
 
@@ -71,21 +71,8 @@ Para manter o repositório leve e reproduzível, o runtime não embute a base p�
 
 Arquivo da amostra:
 
-- [oilfield_telemetry_3w_style_sample.csv](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/raw/oilfield_telemetry_3w_style_sample.csv)
+- [oilfield_telemetry_3w_style_sample.csv](data/raw/oilfield_telemetry_3w_style_sample.csv)
 
-## Storytelling técnico
-
-Manutenção preditiva em oil & gas raramente é só “prever falha”. Na prática, a operação quer responder:
-
-- qual ativo está degradando?
-- qual janela já parece anormal?
-- qual equipamento deve entrar na fila de manutenção primeiro?
-
-Esse projeto foi desenhado com essa mentalidade. Ele não trabalha com uma falha abstrata e distante; ele trabalha com **janelas operacionais**, e o rótulo do problema é:
-
-- `maintenance_required`
-
-Ou seja, a pergunta do modelo é diretamente útil para operação.
 
 ## O que o projeto faz, passo a passo
 
@@ -100,13 +87,13 @@ Ou seja, a pergunta do modelo é diretamente útil para operação.
 
 ## Arquitetura do repositório
 
-- [src/sample_data.py](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/src/sample_data.py)  
+- [src/sample_data.py](src/sample_data.py)  
   Gera a base sintética inspirada no 3W e registra a referência pública.
-- [src/modeling.py](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/src/modeling.py)  
+- [src/modeling.py](src/modeling.py)  
   Implementa o pipeline de classificação, o treino e a avaliação.
-- [main.py](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/main.py)  
+- [main.py](main.py)  
   Executa o benchmark ponta a ponta.
-- [tests/test_project.py](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/tests/test_project.py)  
+- [tests/test_project.py](tests/test_project.py)  
   Garante o contrato mínimo do projeto.
 
 ### Pipeline conceitual
@@ -388,8 +375,8 @@ A escalabilidade real entraria em:
 
 ## Artefatos gerados
 
-- [maintenance_scored_windows.csv](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/processed/maintenance_scored_windows.csv)
-- [oilfield_predictive_maintenance_report.json](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/processed/oilfield_predictive_maintenance_report.json)
+- [maintenance_scored_windows.csv](data/processed/maintenance_scored_windows.csv)
+- [oilfield_predictive_maintenance_report.json](data/processed/oilfield_predictive_maintenance_report.json)
 
 ### Contrato do relatório
 
@@ -433,15 +420,6 @@ O arquivo `oilfield_predictive_maintenance_report.json` fixa um contrato simples
 - criar thresholds por criticidade operacional;
 - acoplar a arquitetura a batch + stream em nuvem.
 
-## Como defender este projeto em entrevista
-
-Uma forma forte de apresentar este repositório é:
-
-- ele mostra manutenção preditiva orientada a janelas operacionais;
-- trabalha com sinais coerentes para contexto de oil & gas;
-- separa claramente dataset, modelagem, avaliação e artefatos;
-- produz score probabilístico, não só classe binária;
-- abre discussão sobre governança, drift, batch, stream e priorização em campo.
 
 ## English
 
@@ -465,8 +443,8 @@ The project uses the Petrobras **3W Dataset** as its domain reference because it
 
 The project exports:
 
-- [maintenance_scored_windows.csv](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/processed/maintenance_scored_windows.csv)
-- [oilfield_predictive_maintenance_report.json](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/oilfield-equipment-predictive-maintenance/data/processed/oilfield_predictive_maintenance_report.json)
+- [maintenance_scored_windows.csv](data/processed/maintenance_scored_windows.csv)
+- [oilfield_predictive_maintenance_report.json](data/processed/oilfield_predictive_maintenance_report.json)
 
 The report keeps the benchmark contract explicit through:
 
